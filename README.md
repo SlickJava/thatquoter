@@ -5,6 +5,6 @@ It demonstrates real time html changes with socket.io and basic express.js funct
 
 To experience thatQuoter, go to http://thatquoter.com :-)
 
-[thatQuoter v0.1](http://i.imgur.com/TQqxWwX.png)
+![thatQuoter v0.1](http://i.imgur.com/TQqxWwX.png)
 
 
