@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en" ng-app>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link rel="stylesheet" href="/css/bootstrap-responsive.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Raleway:200i" rel="stylesheet">
+  <style>
+    @import url(http://fonts.googleapis.com/css?family=Antic+Slab);
+    html,
+    /*fade in*/
+    
+    body {
+      height: 100%;
+    }
+    
+    h1 {
+      font-family: 'Antic Slab', serif;
+      font-size: 80px;
+      color: #28B78D;
+    }
+    
+    h2 {
+      font-family: 'Antic Slab', serif;
+      font-size: 60px;
+      color: #28B78D;
+    }
+    
+    h3 {
+      font-family: 'Raleway', sans-serif;
+      font-size: 60px;
+      line-height: 50px;
+      color: #8A949B;
+    }
+    
+    .history {
+      font-family: 'Raleway', sans-serif;
+    }
+    
+    .buttonnew {
+      background-color: #28B78D;
+      /* Green */
+      border: 2px;
+      border-radius: 10px;
+      color: #243743;
+      padding: 5px 70px;
+      text-align: center;
+      font-family: 'Raleway', sans-serif;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+    }
+    
+    .buttonnew:hover {
+      background-color: #25A780
+    }
+    
+    .buttonnew:active {
+      background-color: #1c7d60;
+    }
+    
+    .buttonnew:focus {
+      outline: 0;
+    }
+    
+    .buttonlike:hover {
+      background-color: #25A780
+    }
+    
+    .buttonlike:active {
+      background-color: #1c7d60;
+    }
+    
+    .buttonlike:focus {
+      outline: 0;
+    }
+    
+    .lead {
+      color: #FAFAFA;
+    }
+    /* Custom container */
+    
+    .container-full {
+      margin: 0 auto;
+      width: 100%;
+      min-height: 100%;
+      background-color: #243743;
+      color: #eee;
+      overflow: hidden;
+    }
+    
+    .container-full a {
+      color: #efefef;
+      text-decoration: none;
+    }
+    
+    .v-center {
+      margin-top: 7%;
+    }
+    
+    input[type=text] {
+      background-color: #FAFAFA;
+      color: #8A949B;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-full">
+    <div class="row">
+      <div class="col-lg-6 text-center v-center">
+        <h1>thatQuoter</h1>
+        <br>
+        <p class="lead">Type your quote below</p>
+        <br>
+        <form class="form-inline" id="quoteBox">
+          <div class="form-group">
+            <input type="text" class="form-control" id="name" placeholder="Your name">
+          </div>
+          <div class="form-group">
+            <input type="text" class="form-control" id="quote" placeholder="Enter your quote here">
+          </div>
+          <button type="submit" class="buttonnew">Be famous</button>
+        </form>
+      </div>
+    </div>
+    <div class="row">
+      <article>
+        <div class="col-xs-6 col-sm-4 text-center v-center">
+          <h3 id="outputQuote"></h3>
+          <br>
+          <div id="button"></div>
+        </div>
+      </article>
+    </div>
+
+    <div class="row">
+      <article>
+        <div class="col-xs-6 col-sm-4 text-center v-center">
+          <p class="lead">History</p>
+          <p id="quoteHistory" class="history"></p>
+        </div>
+      </article>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js">
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      jQuery(function($) {
+        var socket = io.connect();
+        var $quoteBox = $('#quoteBox');
+        var $quoteInput = $('#quote');
+        var $quoteShow = $('#outputQuote');
+        var $quoteButton = $('#button');
+        var $quoteHistory = $('#quoteHistory');
+        var $nameInput = $('#name');
+        var $likeButton = $('#button');
+
+        var currentQuote;
+
+        $quoteBox.submit(function(e) {
+          e.preventDefault();
+          if ($nameInput.val() == '') {
+            $quoteShow.empty();
+            $quoteShow.append('aye you forgot ur name :P');
+            $quoteInput.val('');
+            return;
+          }
+
+          socket.emit('sendname', $nameInput.val());
+          socket.emit('sendquote', $quoteInput.val());
+          $quoteInput.val('');
+        });
+
+        socket.on('newquote', function(data) {
+          $quoteShow.empty().append('<i>' + data + '</i>').fadeIn('slow');
+          currentQuote = data;
+        });
+
+        socket.on('newlike', function(data) {
+          console.log(data);
+          $quoteShow.append(data);
+          $("#like").prop(data);
+        });
+
+        socket.on('quotehistory', function(data) {
+          $quoteHistory.empty();
+          for (var i = 0; i < data.length; i++) {
+            $quoteHistory.append('<i>' + (i + 1) + '. ' + data[i] + '<br></i>').fadeIn('slow');
+            console.log(data[i]);
+          }
+        });
+
+      });
+    </script>
+    <!-- /row -->
+    <div class="row">
+      <div class="col-lg-12 text-center v-center" style="font-size:39pt;"> <a href="#"><i class="glyphicon glyphicon-google-plus"></i></a> <a href="#"><i class="glyphicon glyphicon-facebook"></i></a>
+        <a href="#"><i class="glyphicon glyphicon-twitter"></i>
+                      </a> <a href="#"><i class="glyphicon glyphicon-github"></i></a> <a href="#"><i class="glyphicon glyphicon-pinterest"></i></a>
+
+      </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+  </div>
+  <!-- /container full -->
+  <div class="container">
+    <hr>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h3>Hi Peeps</h3>
+          </div>
+          <div class="panel-body">Why'd you scroll down you filthy person.</div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <br>
+        <br>
+        <p class="pull-right"><a href="http://www.github.com/SlickJava">My github</a> &nbsp; ©Copyright 2016 SlickJava<sup></sup></p>
+        <br>
+        <br>
+      </div>
+    </div>
+
+  </div>
+  <script src="/js/bootstrap.min.js"></script>
+  <script src="/js/angular.min.js"></script>
+</body>
+
+</html>
