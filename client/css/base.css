@@ -1,0 +1,99 @@
+@import url(http://fonts.googleapis.com/css?family=Antic+Slab);
+html,
+
+/*fade in*/
+
+body {
+    height: 100%;
+}
+
+h1 {
+    font-family: 'Antic Slab', serif;
+    font-size: 80px;
+    color: #28B78D;
+}
+
+h2 {
+    font-family: 'Antic Slab', serif;
+    font-size: 60px;
+    color: #28B78D;
+}
+
+h3 {
+    font-family: 'Raleway', sans-serif;
+    font-size: 60px;
+    line-height: 50px;
+    color: #8A949B;
+}
+
+.history {
+    font-family: 'Raleway', sans-serif;
+}
+
+.buttonnew {
+    background-color: #28B78D;
+    /* Green */
+    border: 2px;
+    border-radius: 10px;
+    color: #243743;
+    padding: 5px 70px;
+    text-align: center;
+    font-family: 'Raleway', sans-serif;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+}
+
+.buttonnew:hover {
+    background-color: #25A780;
+}
+
+.buttonnew:active {
+    background-color: #1c7d60;
+}
+
+.buttonnew:focus {
+    outline: 0;
+}
+
+.buttonlike:hover {
+    background-color: #25A780
+}
+
+.buttonlike:active {
+    background-color: #1c7d60;
+}
+
+.buttonlike:focus {
+    outline: 0;
+}
+
+.lead {
+    color: #FAFAFA;
+}
+
+
+/* Custom container */
+
+.container-full {
+    margin: 0 auto;
+    width: 100%;
+    min-height: 100%;
+    background-color: #243743;
+    color: #eee;
+    overflow: hidden;
+}
+
+.container-full a {
+    color: #efefef;
+    text-decoration: none;
+}
+
+.v-center {
+    margin-top: 7%;
+}
+
+input[type=text] {
+    background-color: #FAFAFA;
+    color: #8A949B;
+}
