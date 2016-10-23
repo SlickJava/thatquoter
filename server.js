@@ -26,6 +26,9 @@ var sockets = [];
 var currentQuote = null;
 var quoteHistory = [];
 
+var quoteObj = require('./quote');
+
+
 io.on('connection', function(socket) {
 
   var name;
@@ -37,10 +40,11 @@ io.on('connection', function(socket) {
 
   socket.on('sendquote', function(data) {
     if (name != null) {
-      data = '\'' + data + '\'' + ' - ' + name;
-      currentQuote = data;
-      io.sockets.emit('newquote', data);
-      quoteHistory.unshift(data);
+      var newQuote = new quoteObj(name, data);
+      currentQuote = newQuote;
+      io.sockets.emit('newquote', newQuote);
+
+      quoteHistory.unshift(newQuote);
       console.log(quoteHistory);
 
       if (quoteHistory.length > 10) {
@@ -49,21 +53,25 @@ io.on('connection', function(socket) {
 
       io.sockets.emit('quotehistory', quoteHistory);
 
-      var count = 0;
-      socket.on('like', function(data) {
-        console.log(data);
-        count += 1;
-        io.sockets.emit('newlike', count);
-      });
     }
+  });
+
+  socket.on('like', function(data) {
+    currentQuote.like += 1;
+    io.sockets.emit('newlike', currentQuote);
+    quoteHistory.shift();
+    quoteHistory.unshift(currentQuote);
+    io.sockets.emit('quotehistory', quoteHistory);
   });
 
 
   if (currentQuote != null) {
     socket.emit('newquote', currentQuote);
+    socket.emit('newlike', currentQuote);
+
   }
-  
-  if(quoteHistory != null) {
+
+  if (quoteHistory != null) {
     socket.emit('quotehistory', quoteHistory);
   }
 
