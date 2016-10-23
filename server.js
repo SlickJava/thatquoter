@@ -23,16 +23,16 @@ var io = socketio.listen(server);
 router.use(express.static(path.resolve(__dirname, 'client')));
 var messages = [];
 var sockets = [];
-var currentQuote = null;
+var quoteObj = require('./quote');
+var currentQuote = new quoteObj('Jason', 'Added a like system');
 var quoteHistory = [];
 
-var quoteObj = require('./quote');
 
 
 io.on('connection', function(socket) {
 
   var name;
-
+  
   socket.on('sendname', function(data) {
     name = data;
   });

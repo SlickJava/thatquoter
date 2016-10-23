@@ -117,10 +117,10 @@
         <br>
         <form class="form-inline" id="quoteBox">
           <div class="form-group">
-            <input type="text" class="form-control" id="name" placeholder="Your name">
+            <input type="text" class="form-control" id="name" placeholder="Your name" maxlength="200">
           </div>
           <div class="form-group">
-            <input type="text" class="form-control" id="quote" placeholder="Enter your quote here">
+            <input type="text" class="form-control" id="quote" placeholder="Enter your quote here" maxlength="200">
           </div>
           <button type="submit" class="buttonnew">Be famous</button>
         </form>
@@ -160,10 +160,12 @@
         var $quoteHistory = $('#quoteHistory');
         var $nameInput = $('#name');
         var $likeButton = $('#like');
-
+        var currentQuote;
+        
         socket.on('newquote', function(data) {
           var quote = '\'' + data.quote + '\'' + ' - ' + data.name;
           $quoteShow.empty().append('<i>' + quote + '</i>').fadeIn('slow');
+          currentQuote = data;
           $likeButton.prop('disabled', false);
           $likeButton.text('Like');
           $likeButton.css('background-color', '#28B78D');
@@ -171,6 +173,7 @@
 
         
         socket.on('newlike', function(data) {
+          currentQuote = data;
           console.log(data);
           $likeButton.text('Like - ' + data.like);
         });
@@ -185,16 +188,23 @@
         
         $quoteBox.submit(function(e) {
           e.preventDefault();
-          if ($nameInput.val() == '') {
+          if ($nameInput.val() == '' || $quoteInput.val() == '') {
             $quoteShow.empty();
-            $quoteShow.append('aye you forgot ur name :P');
+            $quoteShow.append('aye fill in da boxes');
             $quoteInput.val('');
             return;
           }
-
+          
+          if($quoteInput.val() == currentQuote.quote && $nameInput.val() == currentQuote.name)
+          {
+            $quoteInput.empty();
+            return;
+          }
+        
           socket.emit('sendname', $nameInput.val());
           socket.emit('sendquote', $quoteInput.val());
           $quoteInput.val('');
+          
         });
 
         $likeButton.click(function(e) {
@@ -230,7 +240,7 @@
           <div class="panel-heading">
             <h3>Hi Peeps</h3>
           </div>
-          <div class="panel-body">Why'd you scroll down you filthy person.</div>
+          <div class="panel-body">Why'd you scroll down you filthy person. <br> Other than that my name's Jason and I made this cute little web app. <br> Thanks for coming here!</div>
         </div>
       </div>
     </div>
