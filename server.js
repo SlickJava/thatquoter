@@ -23,15 +23,21 @@ var io = socketio.listen(server);
 router.use(express.static(path.resolve(__dirname, 'client')));
 var messages = [];
 var sockets = [];
+
 var quoteObj = require('./quote');
+var clientSession = require('./user')
+
 var currentQuote = new quoteObj('Jason', 'Added a like system');
 var quoteHistory = [];
-
-
 
 io.on('connection', function(socket) {
 
   var name;
+  var sessions = [];
+  
+  console.log("Client with id: " + socket.id + " connected.");
+  var newSession = new clientSession(socket.id);
+  sessions.unshift(newSession);
   
   socket.on('sendname', function(data) {
     name = data;
@@ -40,7 +46,8 @@ io.on('connection', function(socket) {
 
   socket.on('sendquote', function(data) {
     if (name != null) {
-      var newQuote = new quoteObj(name, data);
+      var newQuote = new quoteObj(name, data, this.id);
+      console.log(this.id);
       currentQuote = newQuote;
       io.sockets.emit('newquote', newQuote);
 
